@@ -4,13 +4,11 @@ import drv260x_constants.register as Register
 import drv260x_constants.bitmasks as Mask
 import drv260x_constants.misc as Misc
 
-from smbus2 import SMBus
 import math
 
 class DRV260X:
-    def __init__(self, i2c_bus_num = 1):
-        self.__i2c_bus_num = i2c_bus_num
-        self.__i2c_bus = SMBus(self.__i2c_bus_num)
+    def __init__(self, i2c):
+        self.__i2c_bus = i2c
         self._mode = -1
         self.__library = -1
         self.__standby = -1
@@ -48,7 +46,7 @@ class DRV260X:
 
     @dev_reset.setter
     def dev_reset(self, value):
-        self.set_register_value(Register._DRV260X_REG_MODE, value, Mask._DEV_RESET_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_MODE, value, Mask._DEV_RESET_WRITE, 7)
 
     @property
     def standby(self):
@@ -62,10 +60,10 @@ class DRV260X:
     @standby.setter
     def standby(self, value):
         if value:
-            self.set_register_value(Register._DRV260X_REG_MODE, 1, Mask._STANDBY_WRITE, 6)
+            self.write_register_value(Register._DRV260X_REG_MODE, 1, Mask._STANDBY_WRITE, 6)
             self.__standby = 1
         else:
-            self.set_register_value(Register._DRV260X_REG_MODE, 0, Mask._STANDBY_WRITE, 6)
+            self.write_register_value(Register._DRV260X_REG_MODE, 0, Mask._STANDBY_WRITE, 6)
             self.__standby = 0
 
     @property
@@ -78,7 +76,7 @@ class DRV260X:
     def mode(self, value):
         if not Mode.INT_TRIG <= value <= Mode.AUTOCAL:
             raise ValueError("Mode value must be between 0 and 6")
-        self.set_register_value(Register._DRV260X_REG_MODE, value, Mask._MODE_WRITE)
+        self.write_register_value(Register._DRV260X_REG_MODE, value, Mask._MODE_WRITE)
         self._mode = value
 
     @property
@@ -87,7 +85,7 @@ class DRV260X:
 
     @rtp_input.setter
     def rtp_input(self, value):
-        self.set_register_value(Register._DRV260X_REG_RTP_IN, value, Mask._RTP_INPUT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_RTP_IN, value, Mask._RTP_INPUT_WRITE)
 
     @property
     def hi_z(self):
@@ -95,7 +93,7 @@ class DRV260X:
 
     @hi_z.setter
     def hi_z(self, value):
-        self.set_register_value(Register._DRV260X_REG_LIBRARY, value, Mask._HI_Z_WRITE, 4)
+        self.write_register_value(Register._DRV260X_REG_LIBRARY, value, Mask._HI_Z_WRITE, 4)
 
     @property
     def library(self):
@@ -107,7 +105,7 @@ class DRV260X:
     def library(self, value):
         if not Library.EMPTY <= value <= Library.LRA:
             raise ValueError("Library value must be between 0 and 6")
-        self.set_register_value(Register._DRV260X_REG_LIBRARY, value, Mask._LIBRARY_SEL_READ)
+        self.write_register_value(Register._DRV260X_REG_LIBRARY, value, Mask._LIBRARY_SEL_READ)
         self.__library = value
 
     @property
@@ -116,7 +114,7 @@ class DRV260X:
 
     @wait0.setter
     def wait0(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq0(self):
@@ -124,7 +122,7 @@ class DRV260X:
 
     @wav_frm_seq0.setter
     def wav_frm_seq0(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ0, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ0, value, Mask._WAV_FRM_SEQ_WRITE)
 
     @property
     def wait1(self):
@@ -132,7 +130,7 @@ class DRV260X:
 
     @wait1.setter
     def wait1(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq1(self):
@@ -140,7 +138,7 @@ class DRV260X:
 
     @wav_frm_seq1.setter
     def wav_frm_seq1(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ1, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ1, value, Mask._WAV_FRM_SEQ_WRITE)
     
     @property
     def wait2(self):
@@ -148,7 +146,7 @@ class DRV260X:
 
     @wait2.setter
     def wait2(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq2(self):
@@ -156,7 +154,7 @@ class DRV260X:
 
     @wav_frm_seq2.setter
     def wav_frm_seq2(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ2, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ2, value, Mask._WAV_FRM_SEQ_WRITE)
     
     @property
     def wait3(self):
@@ -164,7 +162,7 @@ class DRV260X:
 
     @wait3.setter
     def wait3(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq3(self):
@@ -172,7 +170,7 @@ class DRV260X:
 
     @wav_frm_seq3.setter
     def wav_frm_seq3(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ3, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ3, value, Mask._WAV_FRM_SEQ_WRITE)
     
     @property
     def wait4(self):
@@ -180,7 +178,7 @@ class DRV260X:
 
     @wait4.setter
     def wait4(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq4(self):
@@ -188,7 +186,7 @@ class DRV260X:
 
     @wav_frm_seq4.setter
     def wav_frm_seq4(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ4, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ4, value, Mask._WAV_FRM_SEQ_WRITE)
     
     @property
     def wait5(self):
@@ -196,7 +194,7 @@ class DRV260X:
 
     @wait5.setter
     def wait5(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq5(self):
@@ -204,7 +202,7 @@ class DRV260X:
 
     @wav_frm_seq5.setter
     def wav_frm_seq5(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ5, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ5, value, Mask._WAV_FRM_SEQ_WRITE)
     
     @property
     def wait6(self):
@@ -212,7 +210,7 @@ class DRV260X:
 
     @wait6.setter
     def wait6(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq6(self):
@@ -220,7 +218,7 @@ class DRV260X:
 
     @wav_frm_seq6.setter
     def wav_frm_seq6(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ6, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ6, value, Mask._WAV_FRM_SEQ_WRITE)
 
     @property
     def wait7(self):
@@ -228,7 +226,7 @@ class DRV260X:
 
     @wait7.setter
     def wait7(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAIT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAIT_WRITE, 7)
 
     @property
     def wav_frm_seq7(self):
@@ -236,7 +234,7 @@ class DRV260X:
 
     @wav_frm_seq7.setter
     def wav_frm_seq7(self, value):
-        self.set_register_value(Register._DRV260X_REG_WAVESEQ7, value, Mask._WAV_FRM_SEQ_WRITE)
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ7, value, Mask._WAV_FRM_SEQ_WRITE)
 
     @property
     def go(self):
@@ -244,7 +242,7 @@ class DRV260X:
 
     @go.setter
     def go(self, value):
-        self.set_register_value(Register._DRV260X_REG_GO, value, Mask._GO_WRITE)
+        self.write_register_value(Register._DRV260X_REG_GO, value, Mask._GO_WRITE)
 
     @property
     def odt(self):
@@ -252,7 +250,7 @@ class DRV260X:
 
     @odt.setter
     def odt(self, value):
-        self.set_register_value(Register._DRV260X_REG_OVERDRIVE, value, Mask._OD_CLAMP_WRITE)
+        self.write_register_value(Register._DRV260X_REG_OVERDRIVE, value, Mask._OD_CLAMP_WRITE)
 
     @property
     def spt(self):
@@ -260,7 +258,7 @@ class DRV260X:
 
     @spt.setter
     def spt(self, value):
-        self.set_register_value(Register._DRV260X_REG_SUSTAINPOS, value, Mask._SPT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_SUSTAINPOS, value, Mask._SPT_WRITE)
 
     @property
     def snt(self):
@@ -268,7 +266,7 @@ class DRV260X:
 
     @snt.setter
     def snt(self, value):
-        self.set_register_value(Register._DRV260X_REG_SUSTAINNEG, value, Mask._SNT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_SUSTAINNEG, value, Mask._SNT_WRITE)
 
     @property
     def brt(self):
@@ -276,7 +274,7 @@ class DRV260X:
 
     @brt.setter
     def brt(self, value):
-        self.set_register_value(Register._DRV260X_REG_BREAK_TIME_OFFSET, value, Mask._BRT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_BREAK_TIME_OFFSET, value, Mask._BRT_WRITE)
 
     @property
     def ath_peak_time(self):
@@ -284,7 +282,7 @@ class DRV260X:
 
     @ath_peak_time.setter
     def ath_peak_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB, value, Mask._ATH_PEAK_TIME_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB, value, Mask._ATH_PEAK_TIME_WRITE)
 
     @property
     def ath_filter(self):
@@ -292,7 +290,7 @@ class DRV260X:
 
     @ath_filter.setter
     def ath_filter(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB, value, Mask._ATH_FILTER_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB, value, Mask._ATH_FILTER_WRITE)
 
     @property
     def ath_min_input(self):
@@ -300,7 +298,7 @@ class DRV260X:
 
     @ath_min_input.setter
     def ath_min_input(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_IN, value, Mask._ATH_MIN_INPUT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_IN, value, Mask._ATH_MIN_INPUT_WRITE)
 
     @property
     def ath_max_input(self):
@@ -308,7 +306,7 @@ class DRV260X:
 
     @ath_max_input.setter
     def ath_max_input(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_IN, value, Mask._ATH_MAX_INPUT_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_IN, value, Mask._ATH_MAX_INPUT_WRITE)
 
     @property
     def ath_min_drive(self):
@@ -316,7 +314,7 @@ class DRV260X:
 
     @ath_min_drive.setter
     def ath_min_drive(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_OUT, value, Mask._ATH_MIN_DRIVE_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_OUT, value, Mask._ATH_MIN_DRIVE_WRITE)
 
     @property
     def ath_max_drive(self):
@@ -324,7 +322,7 @@ class DRV260X:
 
     @ath_max_drive.setter
     def ath_max_drive(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_OUT, value, Mask._ATH_MAX_DRIVE_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_OUT, value, Mask._ATH_MAX_DRIVE_WRITE)
 
     @property
     def rated_voltage(self):
@@ -332,7 +330,7 @@ class DRV260X:
 
     @rated_voltage.setter
     def rated_voltage(self, value):
-        self.set_register_value(Register._DRV260X_REG_RATED_VOLTAGE, value, Mask._RATED_VOLTAGE_WRITE)
+        self.write_register_value(Register._DRV260X_REG_RATED_VOLTAGE, value, Mask._RATED_VOLTAGE_WRITE)
 
     @property
     def od_clamp(self):
@@ -340,7 +338,7 @@ class DRV260X:
 
     @od_clamp.setter
     def od_clamp(self, value):
-        self.set_register_value(Register._DRV260X_REG_CLAMP_VOLTAGE, value, Mask._OD_CLAMP_WRITE)
+        self.write_register_value(Register._DRV260X_REG_CLAMP_VOLTAGE, value, Mask._OD_CLAMP_WRITE)
       
     @property
     def a_cal_comp(self):
@@ -348,7 +346,7 @@ class DRV260X:
 
     @a_cal_comp.setter
     def a_cal_comp(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUTOCAL_COMP_RESULT, value, Mask._A_CAL_COMP_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUTOCAL_COMP_RESULT, value, Mask._A_CAL_COMP_WRITE)
 
     @property
     def a_cal_bemf(self):
@@ -356,7 +354,7 @@ class DRV260X:
 
     @a_cal_bemf.setter
     def a_cal_bemf(self, value):
-        self.set_register_value(Register._DRV260X_REG_AUTOCAL_BACK_EMF_RESULT, value, Mask._A_CAL_BEMF_WRITE)
+        self.write_register_value(Register._DRV260X_REG_AUTOCAL_BACK_EMF_RESULT, value, Mask._A_CAL_BEMF_WRITE)
         
     @property
     def n_erm_lra(self, value):
@@ -368,7 +366,7 @@ class DRV260X:
     def n_erm_lra(self, value):
         if not Misc.ACTUATOR_ERM <= value <= Misc.ACTUATOR_LRA:
             raise ValueError("Actuator value must be " + str(Misc.ACTUATOR_ERM) + " or " + str(Misc.ACTUATOR_LRA))
-        self.set_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._N_ERM_LRA_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._N_ERM_LRA_WRITE, 7)
         self.__actuator = value
 
     @property
@@ -377,7 +375,7 @@ class DRV260X:
 
     @fb_brake_factor.setter
     def fb_brake_factor(self, value):
-        self.set_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._FB_BRAKE_FACTOR_WRITE, 4)
+        self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._FB_BRAKE_FACTOR_WRITE, 4)
 
     @property
     def loop_gain(self):
@@ -385,7 +383,7 @@ class DRV260X:
         
     @loop_gain.setter
     def loop_gain(self, value):
-        self.set_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._LOOP_GAIN_WRITE, 2)
+        self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._LOOP_GAIN_WRITE, 2)
 
     @property
     def bemf_gain(self):
@@ -393,7 +391,7 @@ class DRV260X:
         
     @bemf_gain.setter
     def bemf_gain(self, value):
-        self.set_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._BEMF_GAIN_WRITE)
+        self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._BEMF_GAIN_WRITE)
 
     @property
     def startup_boost(self):
@@ -401,7 +399,7 @@ class DRV260X:
     
     @startup_boost.setter
     def startup_boost(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._STARTUP_BOOST_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._STARTUP_BOOST_WRITE, 7)
 
     @property
     def ac_couple(self):
@@ -409,7 +407,7 @@ class DRV260X:
     
     @ac_couple.setter
     def ac_couple(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._AC_COUPLE_WRITE, 5)
+        self.write_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._AC_COUPLE_WRITE, 5)
     
     @property
     def drive_time(self):
@@ -417,7 +415,7 @@ class DRV260X:
     
     @drive_time.setter
     def drive_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._DRIVE_TIME_WRITE)
+        self.write_register_value(Register._DRV260X_REG_CONTROL1, value, Mask._DRIVE_TIME_WRITE)
     
     @property
     def bidir_input(self):
@@ -425,7 +423,7 @@ class DRV260X:
     
     @bidir_input.setter
     def bidir_input(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BIDIR_INPUT_WRITE, 7)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BIDIR_INPUT_WRITE, 7)
     
     @property
     def brake_stabilizer(self):
@@ -433,7 +431,7 @@ class DRV260X:
     
     @brake_stabilizer.setter
     def brake_stabilizer(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BRAKE_STABILIZER_WRITE, 6)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BRAKE_STABILIZER_WRITE, 6)
     
     @property
     def sample_time(self):
@@ -441,7 +439,7 @@ class DRV260X:
     
     @sample_time.setter
     def sample_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._SAMPLE_TIME_WRITE, 4)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._SAMPLE_TIME_WRITE, 4)
     
     @property
     def blanking_time(self):
@@ -449,7 +447,7 @@ class DRV260X:
     
     @blanking_time.setter
     def blanking_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BLANKING_TIME_WRITE, 2)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._BLANKING_TIME_WRITE, 2)
     
     @property
     def idiss_time(self):
@@ -457,7 +455,7 @@ class DRV260X:
     
     @idiss_time.setter
     def idiss_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._IDISS_TIME_READ)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._IDISS_TIME_READ)
     
     @property
     def ng_tresh(self):
@@ -465,7 +463,7 @@ class DRV260X:
     
     @ng_tresh.setter
     def ng_tresh(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._NG_TRESH_WRITE, 6)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._NG_TRESH_WRITE, 6)
     
     @property
     def erm_open_loop(self):
@@ -473,7 +471,7 @@ class DRV260X:
     
     @erm_open_loop.setter
     def erm_open_loop(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._ERM_OPEN_LOOP_WRITE, 5)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._ERM_OPEN_LOOP_WRITE, 5)
     
     @property
     def supply_comp_dis(self):
@@ -481,7 +479,7 @@ class DRV260X:
     
     @supply_comp_dis.setter
     def supply_comp_dis(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._SUPPLY_COMP_DIS_WRITE, 4)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._SUPPLY_COMP_DIS_WRITE, 4)
     
     @property
     def data_format_rtp(self):
@@ -493,7 +491,7 @@ class DRV260X:
     def data_format_rtp(self, value):
         if not Misc.RTP_SIGNED <= value <= Misc.RTP_UNSIGNED:
             raise ValueError("RTP format vale must be " + str(Misc.RTP_SIGNED) + " or " + str(Misc.RTP_UNSIGNED))
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, Mask._DATA_FORMAT_RTP_WRITE, 3)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, Mask._DATA_FORMAT_RTP_WRITE, 3)
     
     @property
     def lra_drive_mode(self):
@@ -501,7 +499,7 @@ class DRV260X:
     
     @lra_drive_mode.setter
     def lra_drive_mode(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._LRA_DRIVE_MODE_WRITE, 2)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._LRA_DRIVE_MODE_WRITE, 2)
     
     @property
     def n_pwm_analog(self):
@@ -509,7 +507,7 @@ class DRV260X:
     
     @n_pwm_analog.setter
     def n_pwm_analog(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._N_PWM_ANALOG_WRITE, 1)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._N_PWM_ANALOG_WRITE, 1)
     
     @property
     def lra_open_loop(self):
@@ -517,7 +515,7 @@ class DRV260X:
     
     @lra_open_loop.setter
     def lra_open_loop(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._LRA_OPEN_LOOP_WRITE)
+        self.write_register_value(Register._DRV260X_REG_CONTROL3, value, Mask._LRA_OPEN_LOOP_WRITE)
     
     @property
     def auto_cal_time(self):
@@ -525,7 +523,7 @@ class DRV260X:
     
     @auto_cal_time.setter
     def auto_cal_time(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL4, value, Mask._AUTO_CAL_TIME_WRITE, 4)
+        self.write_register_value(Register._DRV260X_REG_CONTROL4, value, Mask._AUTO_CAL_TIME_WRITE, 4)
 
     @property
     def otp_status(self):
@@ -537,7 +535,7 @@ class DRV260X:
 
     @otp_program.setter
     def otp_program(self, value):
-        self.set_register_value(Register._DRV260X_REG_CONTROL4, value, Mask._OTP_PROGRAM_WRITE)
+        self.write_register_value(Register._DRV260X_REG_CONTROL4, value, Mask._OTP_PROGRAM_WRITE)
 
     @property
     def vbat(self):
@@ -545,7 +543,7 @@ class DRV260X:
     
     @vbat.setter
     def vbat(self, value):
-        self.set_register_value(Register._DRV260X_REG_VOLTAGE_MONITOR, value, Mask._RATED_VOLTAGE_WRITE)
+        self.write_register_value(Register._DRV260X_REG_VOLTAGE_MONITOR, value, Mask._RATED_VOLTAGE_WRITE)
 
     @property
     def lra_period(self):
@@ -553,9 +551,19 @@ class DRV260X:
     
     @lra_period.setter
     def lra_period(self, value):
-        self.set_register_value(Register._DRV260X_REG_LRA_RESONANCE_PERIOD, value, Mask._LRA_PERIOD_WRITE)  
+        self.write_register_value(Register._DRV260X_REG_LRA_RESONANCE_PERIOD, value, Mask._LRA_PERIOD_WRITE)  
     
-    def set_register_value(self, register, value, write_mask, shift = 0):
+    def get_waveform(self, sequencer):
+        if not 0 <= sequencer <= 7:
+            raise ValueError("Sequencer register must be between 0 and 7.")
+        self.read_register_value(Register._DRV260X_REG_WAVESEQ0 + sequencer, Mask._WAV_FRM_SEQ_READ)
+
+    def set_waveform(self, sequencer, value):
+        if not 0 <= sequencer <= 7 or not 0 <= value <= 123:
+            raise ValueError("Sequencer register must be between 0 and 7. Value must be between 0 and 123")
+        self.write_register_value(Register._DRV260X_REG_WAVESEQ0 + sequencer, value, Mask._WAV_FRM_SEQ_WRITE)
+    
+    def write_register_value(self, register, value, write_mask, shift = 0):
         reg_val = self.read_byte(register)
         self.write_byte(register, (reg_val & write_mask) | (value << shift))    
 
