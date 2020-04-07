@@ -6,23 +6,16 @@ import drv260x_constants.misc as Misc
 
 import math
 
-class DRV260X:
+class DRV260X_Base:
+
     def __init__(self, i2c):
         self.__i2c_bus = i2c
-        self._mode = -1
-        self.__library = -1
-        self.__standby = -1
-        self.__actuator = -1
-        self.__device_id = -1
-        self.__rtp_format = -1
         if not self.is_present():
             raise ConnectionError("Not present")
     
     @property
     def device_id(self):
-        if self.__device_id < 0:
-            self.__device_id = self.read_register_value(Register._DRV260X_REG_STATUS, Mask._DEVICE_ID_READ, 7)
-        return self.__device_id
+        return self.read_register_value(Register._DRV260X_REG_STATUS, Mask._DEVICE_ID_READ, 7)
 
     @property
     def diag_result(self):
@@ -50,34 +43,21 @@ class DRV260X:
 
     @property
     def standby(self):
-        if self.__standby < 0:
-            self.__standby = self.read_register_value(Register._DRV260X_REG_MODE, Mask._MODE_READ, 6)
-        if self.__standby == 0:
-            return False
-        else:
-            return True
+        return self.read_register_value(Register._DRV260X_REG_MODE, Mask._MODE_READ, 6)
     
     @standby.setter
     def standby(self, value):
-        if value:
-            self.write_register_value(Register._DRV260X_REG_MODE, 1, Mask._STANDBY_WRITE, 6)
-            self.__standby = 1
-        else:
-            self.write_register_value(Register._DRV260X_REG_MODE, 0, Mask._STANDBY_WRITE, 6)
-            self.__standby = 0
+        self.write_register_value(Register._DRV260X_REG_MODE, 1, Mask._STANDBY_WRITE, 6)
 
     @property
     def mode(self):
-        if self._mode < 0:
-            self._mode = self.read_register_value(Register._DRV260X_REG_MODE, Mask._MODE_READ)
-        return self._mode
+        return self.read_register_value(Register._DRV260X_REG_MODE, Mask._MODE_READ)
 
     @mode.setter
     def mode(self, value):
         if not Mode.INT_TRIG <= value <= Mode.AUTOCAL:
             raise ValueError("Mode value must be between 0 and 6")
         self.write_register_value(Register._DRV260X_REG_MODE, value, Mask._MODE_WRITE)
-        self._mode = value
 
     @property
     def rtp_input(self):
@@ -97,16 +77,13 @@ class DRV260X:
 
     @property
     def library(self):
-        if self.__library < 0:
-            self.__library = self.read_register_value(Register._DRV260X_REG_LIBRARY, Mask._LIBRARY_SEL_READ)
-        return self.__library
+        return self.read_register_value(Register._DRV260X_REG_LIBRARY, Mask._LIBRARY_SEL_READ)
 
     @library.setter
     def library(self, value):
         if not Library.EMPTY <= value <= Library.LRA:
             raise ValueError("Library value must be between 0 and 6")
         self.write_register_value(Register._DRV260X_REG_LIBRARY, value, Mask._LIBRARY_SEL_READ)
-        self.__library = value
 
     @property
     def wait0(self):
@@ -358,16 +335,13 @@ class DRV260X:
         
     @property
     def n_erm_lra(self, value):
-        if self.actuator < 0:
-            self.__actuator = self.read_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, Mask._N_ERM_LRA_READ, 7)
-        return self.__actuator
+        return self.read_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, Mask._N_ERM_LRA_READ, 7)
         
     @n_erm_lra.setter
     def n_erm_lra(self, value):
         if not Misc.ACTUATOR_ERM <= value <= Misc.ACTUATOR_LRA:
             raise ValueError("Actuator value must be " + str(Misc.ACTUATOR_ERM) + " or " + str(Misc.ACTUATOR_LRA))
         self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._N_ERM_LRA_WRITE, 7)
-        self.__actuator = value
 
     @property
     def fb_brake_factor(self):
@@ -483,9 +457,7 @@ class DRV260X:
     
     @property
     def data_format_rtp(self):
-        if self.__rtp_format < 0:
-            self.__rtp_format = self.read_register_value(Register._DRV260X_REG_CONTROL3, Mask._DATA_FORMAT_RTP_READ, 3)
-        return self.__rtp_format
+        return self.read_register_value(Register._DRV260X_REG_CONTROL3, Mask._DATA_FORMAT_RTP_READ, 3)
 
     @data_format_rtp.setter
     def data_format_rtp(self, value):
@@ -573,7 +545,7 @@ class DRV260X:
     def write_byte(self, register, value):
         if not Register._DRV260X_REG_STATUS <= register <= Register._DRV260X_REG_LRA_RESONANCE_PERIOD or register is Register._DRV260X_REG_INVALID_1 or register is Register._DRV260X_REG_INVALID_2:
             raise ValueError("Register " + str(register) + " not valid!")
-        return self.__i2c_bus.write_byte_data(Misc._DRV_ADDR, register, value)
+        self.__i2c_bus.write_byte_data(Misc._DRV_ADDR, register, value)
 
     def read_byte(self, register):
         if not Register._DRV260X_REG_STATUS <= register <= Register._DRV260X_REG_LRA_RESONANCE_PERIOD or register is Register._DRV260X_REG_INVALID_1 or register is Register._DRV260X_REG_INVALID_2:
@@ -587,36 +559,172 @@ class DRV260X:
         except Exception:
             return False
 
-    def setup_rtp(self):
-        self.standby = False
-        # TODO: Calibration procedure
-        self.mode = Mode.RTP
     
-    def calc_rated_voltage(self, voltage, erm_lra, resonant_frequency = 0, sample_time = 0.0002):
-        if erm_lra == Misc.ACTUATOR_ERM:
-                return voltage / 0.02133
-        elif erm_lra == Misc.ACTUATOR_LRA:
-                return voltage / (0.02071 * math.sqrt(1 - (4 * sample_time + 0.0003) * resonant_frequency))
-        return 0
-    
-    def calc_od_clamp(self, voltage, erm_lra, closed_open_loop, resonant_frequency = 0):
-        if erm_lra == Misc.ACTUATOR_ERM:
-            if closed_open_loop == 0:
-                return 0
-            elif closed_open_loop == 1:
-                return voltage / 0.02196
-        elif erm_lra == Misc.ACTUATOR_LRA:
-            if closed_open_loop == 0:
-                return 0
-            elif closed_open_loop == 1:
-                return voltage / (0.02133 * math.sqrt(1 - resonant_frequency * 0.0008))
-        return 0
 
-    def calibrate(self, erm_lra, fb_brake_factor, loop_gain, voltage, od_clamp, auto_cal_time, drive_time, blanking_time, idiss_time, resonant_frequency, sample_time):
-        self.standby = False
+class DRV260X(DRV260X_Base):
+    
+    _bemf_gain_values = {
+        Misc.ACTUATOR_ERM: [0.33, 1.0, 1.8, 4.0],
+        Misc.ACTUATOR_LRA: [5.0, 10.0, 20.0, 30.0]
+    }
+
+    _fb_brake_factor_values = [1, 2, 3, 4, 6, 8, 16, 0]
+
+    def __init__(self, i2c):
+        super().__init(i2c)
+
+    def set_base_calibration_values(self, erm_lra, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time = 1, blanking_time = 2, idiss_time = 2):
+        self.standby = 0
         self.mode = Mode.AUTOCAL
-        self.actuator = erm_lra
-        self.rated_voltage = self.calc_rated_voltage(voltage, erm_lra, resonant_frequency, sample_time)
-        self.od_clamp = self.calc_od_clamp
+        self.n_erm_lra = erm_lra
+         # Set Loop Mode
+        self.erm_open_loop = closed_open_loop
+        self.lra_open_loop = closed_open_loop
+        # Set required values for calibration
+        self.fb_brake_factor = fb_brake_factor
+        self.loop_gain = loop_gain
         self.auto_cal_time = auto_cal_time
         self.drive_time = drive_time
+        # LRA only. Advances use
+        self.sample_time = sample_time
+        self.blanking_time = blanking_time
+        self.idiss_time = idiss_time
+
+    @property
+    def lra_period_us(self):
+        return self.lra_period * 98.46
+    
+    @lra_period_us.setter
+    def lra_period_us(self, value):
+        self.lra_period = value / 98.46
+
+    @property
+    def vbat_volt(self, value):
+        return self.vbat * 5.6 / 255.0
+    
+    @property
+    def bemf_gain_value(self):
+        return self._bemf_gain_values[self.n_erm_lra][self.bemf_gain]
+
+    @property
+    def fb_brake_factor_value(self):
+        return self._fb_brake_factor_values[self.fb_brake_factor]
+
+    @property
+    def a_cal_bemf_volt(self):
+        return ((self.a_cal_bemf / 255.0) * 1.22) / self.bemf_gain_value
+    
+    @property
+    def a_cal_comp_coeff(self):
+        return 1.0 + self.a_cal_comp / 255.0
+
+    @property
+    def ath_max_drive_percent(self):
+        return (self.ath_max_drive / 255.0) * 100.0
+    
+    @ath_max_drive_percent.setter
+    def ath_max_drive_percent(self, value):
+        if not 0 <= value <= 100:
+            raise ValueError("value must be between 0 and 100")
+        self.ath_max_drive = (value / 100.0) * 255.0
+    
+    @property
+    def ath_min_drive_percent(self):
+        return (self.ath_min_drive / 255.0) * 100.0
+    
+    @ath_min_drive_percent.setter
+    def ath_min_drive_percent(self, value):
+        if not 0 <= value <= 100:
+            raise ValueError("value must be between 0 and 100")
+        self.ath_min_drive = (value / 100.0) * 255.0
+    
+    @property
+    def ath_max_input_voltage(self):
+        return (self.ath_max_input * 1.8) / 255.0
+    
+    @ath_max_input_voltage.setter
+    def ath_max_input_voltage(self, value):
+        if not 0 <= value <= 100:
+            raise ValueError("value must be between 0 and 100")
+        self.ath_max_input = (value / 1.8) * 255.0
+
+    @property
+    def ath_min_input_voltage(self):
+        return (self.ath_max_input * 1.8) / 255.0
+    
+    @ath_min_input_voltage.setter
+    def ath_min_input_voltage(self, value):
+        if not 0 <= value <= 100:
+            raise ValueError("value must be between 0 and 100")
+        self.ath_max_input = (value / 1.8) * 255.0
+    
+    @property
+    def ath_peak_time_ms(self):
+        return self.ath_peak_time * 10 + 10
+
+    @ath_peak_time_ms.setter
+    def ath_peak_time_ms(self, value):
+        if value < 10 or value > 40 or value % 10 != 0:
+            raise ValueError("ath_peak_time_ms must be 10, 20, 30, or 40")
+        self.ath_peak_time = (value - 10) / 10.0
+
+    @property
+    def drive_time_ms(self):
+        if self.n_erm_lra == Misc.ACTUATOR_LRA:
+            return self.drive_time * 0.1 + 0.5
+        else:
+            return self.drive_time * 0.2 + 1.0
+    
+    @drive_time_ms.setter
+    def drive_time_ms(self, value):
+        if self.n_erm_lra == Misc.ACTUATOR_LRA:
+            self.drive_time = (value - 0.5) / 0.1
+        else:
+            self.drive_time = (value - 1.0) / 0.2
+
+class DRV260X_ERM(DRV260X):
+    def __init__(self, i2c):
+        super().__init__(i2c)
+        self.standby = 0
+        self.n_erm_lra = Misc.ACTUATOR_ERM
+
+    def calc_rated_voltage(self, voltage_volt):
+        return voltage_volt / 0.02133
+
+    def calc_od_clamp(self, voltage_volt, closed_open_loop, drive_time, idiss_time, blanking_time):
+        if closed_open_loop == Misc.LOOP_MODE_CLOSED:
+            return (voltage_volt * (drive_time + idiss_time + blanking_time)) / (0.02133 * (drive_time - 0.000300))
+        elif closed_open_loop == Misc.LOOP_MODE_OPEN:
+            return voltage_volt / 0.02196
+        else:
+            raise ValueError("closed_open_loop must be LOOP_MODE_CLOSED or LOOP_MODE_OPEN")
+    
+    def calibrate(self, voltage_volt, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, idiss_time, blanking_time, sample_time):
+        self.set_base_calibration_values(Misc.ACTUATOR_ERM, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time, blanking_time, idiss_time)
+        self.rated_voltage = self.calc_rated_voltage(voltage_volt)
+        self.od_clamp = self.calc_od_clamp(voltage_volt, closed_open_loop, drive_time, idiss_time, blanking_time)
+
+class DRV260X_LRA(DRV260X):
+    def __init__(self, i2c):
+        super().__init__(i2c)
+        self.standby = 0
+        self.n_erm_lra = Misc.ACTUATOR_LRA
+    
+    
+    def calc_rated_voltage(self, voltage_volt, sample_time, resonant_frequency):
+        return voltage_volt / (0.02071 * math.sqrt(1 - (4 * sample_time + 0.0003) * resonant_frequency))
+    
+    def calc_od_clamp(self, voltage_volt, closed_open_loop, resonant_frequency = 200):
+        if closed_open_loop == Misc.LOOP_MODE_CLOSED:
+            return voltage_volt / 0.02196
+        elif closed_open_loop == Misc.LOOP_MODE_OPEN:
+            return voltage_volt / (0.02133 * math.sqrt(1 - resonant_frequency * 0.0008))
+        else:
+            raise ValueError("closed_open_loop must be LOOP_MODE_CLOSED or LOOP_MODE_OPEN")
+    
+    def calibrate(self, voltage_volt, closed_open_loop, resonant_frequency, fb_brake_factor, loop_gain, auto_cal_time, drive_time, idiss_time, blanking_time, sample_time):
+        self.set_base_calibration_values(Misc.ACTUATOR_LRA, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time, blanking_time, idiss_time)
+        self.rated_voltage = self.calc_rated_voltage(voltage_volt, sample_time, resonant_frequency)
+        self.od_clamp = self.calc_od_clamp(voltage_volt, closed_open_loop, drive_time, idiss_time, blanking_time)
+
+
