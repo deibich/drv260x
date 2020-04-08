@@ -17,7 +17,7 @@ class DRV260X(DRV260X_Base):
     def __init__(self, i2c):
         super().__init__(i2c)
 
-    def set_base_calibration_values(self, erm_lra, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time = Values.SAMPLE_TIME_300, blanking_time = 2, idiss_time = 1):
+    def set_base_calibration_values(self, erm_lra, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time = Values.SAMPLE_TIME_300, blanking_time = 1, idiss_time = 1):
         self.standby = Values.STANDBY_READY
         self.mode = Values.MODE_AUTOCAL
         self.n_erm_lra = erm_lra

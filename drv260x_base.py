@@ -66,7 +66,7 @@ class DRV260X_Base:
 
     @property
     def hi_z(self):
-        self.read_register_value(Register._DRV260X_REG_LIBRARY, Mask._HI_Z_READ, 4)
+        return self.read_register_value(Register._DRV260X_REG_LIBRARY, Mask._HI_Z_READ, 4)
 
     @hi_z.setter
     def hi_z(self, value):
@@ -84,7 +84,7 @@ class DRV260X_Base:
 
     @property
     def wait0(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAIT_READ, 7)
 
     @wait0.setter
     def wait0(self, value):
@@ -92,7 +92,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq0(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ0, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq0.setter
     def wav_frm_seq0(self, value):
@@ -100,7 +100,7 @@ class DRV260X_Base:
 
     @property
     def wait1(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAIT_READ, 7)
 
     @wait1.setter
     def wait1(self, value):
@@ -108,7 +108,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq1(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ1, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq1.setter
     def wav_frm_seq1(self, value):
@@ -116,7 +116,7 @@ class DRV260X_Base:
     
     @property
     def wait2(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAIT_READ, 7)
 
     @wait2.setter
     def wait2(self, value):
@@ -124,7 +124,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq2(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ2, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq2.setter
     def wav_frm_seq2(self, value):
@@ -132,7 +132,7 @@ class DRV260X_Base:
     
     @property
     def wait3(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAIT_READ, 7)
 
     @wait3.setter
     def wait3(self, value):
@@ -140,7 +140,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq3(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ3, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq3.setter
     def wav_frm_seq3(self, value):
@@ -148,7 +148,7 @@ class DRV260X_Base:
     
     @property
     def wait4(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAIT_READ, 7)
 
     @wait4.setter
     def wait4(self, value):
@@ -156,7 +156,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq4(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ4, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq4.setter
     def wav_frm_seq4(self, value):
@@ -164,7 +164,7 @@ class DRV260X_Base:
     
     @property
     def wait5(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAIT_READ, 7)
 
     @wait5.setter
     def wait5(self, value):
@@ -172,7 +172,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq5(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ5, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq5.setter
     def wav_frm_seq5(self, value):
@@ -180,7 +180,7 @@ class DRV260X_Base:
     
     @property
     def wait6(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAIT_READ, 7)
 
     @wait6.setter
     def wait6(self, value):
@@ -188,7 +188,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq6(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ6, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq6.setter
     def wav_frm_seq6(self, value):
@@ -196,7 +196,7 @@ class DRV260X_Base:
 
     @property
     def wait7(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAIT_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAIT_READ, 7)
 
     @wait7.setter
     def wait7(self, value):
@@ -204,7 +204,7 @@ class DRV260X_Base:
 
     @property
     def wav_frm_seq7(self):
-        self.read_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAV_FRM_SEQ_READ)
+        return self.read_register_value(Register._DRV260X_REG_WAVESEQ7, Mask._WAV_FRM_SEQ_READ)
 
     @wav_frm_seq7.setter
     def wav_frm_seq7(self, value):
@@ -220,7 +220,7 @@ class DRV260X_Base:
 
     @property
     def odt(self):
-        self.read_register_value(Register._DRV260X_REG_OVERDRIVE, Mask._ODT_READ)
+        return self.read_register_value(Register._DRV260X_REG_OVERDRIVE, Mask._ODT_READ)
 
     @odt.setter
     def odt(self, value):
@@ -228,7 +228,7 @@ class DRV260X_Base:
 
     @property
     def spt(self):
-        self.read_register_value(Register._DRV260X_REG_SUSTAINPOS, Mask._SPT_READ)
+        return self.read_register_value(Register._DRV260X_REG_SUSTAINPOS, Mask._SPT_READ)
 
     @spt.setter
     def spt(self, value):
@@ -236,7 +236,7 @@ class DRV260X_Base:
 
     @property
     def snt(self):
-        self.read_register_value(Register._DRV260X_REG_SUSTAINNEG, Mask._SNT_READ)
+        return self.read_register_value(Register._DRV260X_REG_SUSTAINNEG, Mask._SNT_READ)
 
     @snt.setter
     def snt(self, value):
@@ -244,7 +244,7 @@ class DRV260X_Base:
 
     @property
     def brt(self):
-        self.read_register_value(Register._DRV260X_REG_BREAK_TIME_OFFSET, Mask._BRT_READ)
+        return self.read_register_value(Register._DRV260X_REG_BREAK_TIME_OFFSET, Mask._BRT_READ)
 
     @brt.setter
     def brt(self, value):
@@ -252,7 +252,7 @@ class DRV260X_Base:
 
     @property
     def ath_peak_time(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB, Mask._ATH_PEAK_TIME_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB, Mask._ATH_PEAK_TIME_READ)
 
     @ath_peak_time.setter
     def ath_peak_time(self, value):
@@ -260,7 +260,7 @@ class DRV260X_Base:
 
     @property
     def ath_filter(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB, Mask._ATH_FILTER_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB, Mask._ATH_FILTER_READ)
 
     @ath_filter.setter
     def ath_filter(self, value):
@@ -268,7 +268,7 @@ class DRV260X_Base:
 
     @property
     def ath_min_input(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_IN, Mask._ATH_MIN_INPUT_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_IN, Mask._ATH_MIN_INPUT_READ)
 
     @ath_min_input.setter
     def ath_min_input(self, value):
@@ -276,7 +276,7 @@ class DRV260X_Base:
 
     @property
     def ath_max_input(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_IN, Mask._ATH_MAX_INPUT_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_IN, Mask._ATH_MAX_INPUT_READ)
 
     @ath_max_input.setter
     def ath_max_input(self, value):
@@ -284,7 +284,7 @@ class DRV260X_Base:
 
     @property
     def ath_min_drive(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_OUT, Mask._ATH_MIN_DRIVE_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MIN_OUT, Mask._ATH_MIN_DRIVE_READ)
 
     @ath_min_drive.setter
     def ath_min_drive(self, value):
@@ -292,7 +292,7 @@ class DRV260X_Base:
 
     @property
     def ath_max_drive(self):
-        self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_OUT, Mask._ATH_MAX_DRIVE_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUDIO2VIB_MAX_OUT, Mask._ATH_MAX_DRIVE_READ)
 
     @ath_max_drive.setter
     def ath_max_drive(self, value):
@@ -316,7 +316,7 @@ class DRV260X_Base:
       
     @property
     def a_cal_comp(self):
-        self.read_register_value(Register._DRV260X_REG_AUTOCAL_COMP_RESULT, Mask._A_CAL_COMP_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUTOCAL_COMP_RESULT, Mask._A_CAL_COMP_READ)
 
     @a_cal_comp.setter
     def a_cal_comp(self, value):
@@ -324,7 +324,7 @@ class DRV260X_Base:
 
     @property
     def a_cal_bemf(self):
-        self.read_register_value(Register._DRV260X_REG_AUTOCAL_BACK_EMF_RESULT, Mask._A_CAL_BEMF_READ)
+        return self.read_register_value(Register._DRV260X_REG_AUTOCAL_BACK_EMF_RESULT, Mask._A_CAL_BEMF_READ)
 
     @a_cal_bemf.setter
     def a_cal_bemf(self, value):
@@ -366,7 +366,7 @@ class DRV260X_Base:
 
     @property
     def startup_boost(self):
-        self.read_register_value(Register._DRV260X_REG_CONTROL1, Mask._STARTUP_BOOST_READ, 7)
+        return self.read_register_value(Register._DRV260X_REG_CONTROL1, Mask._STARTUP_BOOST_READ, 7)
     
     @startup_boost.setter
     def startup_boost(self, value):
@@ -374,7 +374,7 @@ class DRV260X_Base:
 
     @property
     def ac_couple(self):
-        self.read_register_value(Register._DRV260X_REG_CONTROL1, Mask._AC_COUPLE_READ, 5)
+        return self.read_register_value(Register._DRV260X_REG_CONTROL1, Mask._AC_COUPLE_READ, 5)
     
     @ac_couple.setter
     def ac_couple(self, value):
@@ -496,11 +496,11 @@ class DRV260X_Base:
 
     @property
     def otp_status(self):
-        self.read_register_value(Register._DRV260X_REG_CONTROL4, Mask._OTP_STATUS_READ, 2)
+        return self.read_register_value(Register._DRV260X_REG_CONTROL4, Mask._OTP_STATUS_READ, 2)
     
     @property
     def otp_program(self):
-        self.read_register_value(Register._DRV260X_REG_CONTROL4, Mask._OTP_PROGRAM_READ)
+        return self.read_register_value(Register._DRV260X_REG_CONTROL4, Mask._OTP_PROGRAM_READ)
 
     @otp_program.setter
     def otp_program(self, value):
