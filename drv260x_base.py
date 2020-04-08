@@ -335,7 +335,7 @@ class DRV260X_Base:
         return self.read_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, Mask._N_ERM_LRA_READ, 7)
         
     @n_erm_lra.setter
-    def n_erm_lra(self, value):
+    def n_erm_lra(self):
         if not Values.N_ERM_LRA_ERM <= value <= Values.N_ERM_LRA_LRA:
             raise ValueError("Actuator value must be " + str(Values.N_ERM_LRA_ERM) + " or " + str(Values.N_ERM_LRA_LRA))
         self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._N_ERM_LRA_WRITE, 7)
@@ -533,7 +533,6 @@ class DRV260X_Base:
         self.write_register_value(Register._DRV260X_REG_WAVESEQ0 + sequencer, value, Mask._WAV_FRM_SEQ_WRITE)
     
     def write_register_value(self, register, value, write_mask, shift = 0):
-        print("Write " + str(value) + " to register " + str(register) + " with mask " + str(write_mask) + " and shift " + str(shift))
         reg_val = self.read_byte(register)
         self.write_byte(register, (reg_val & write_mask) | (value << shift))    
 
