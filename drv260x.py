@@ -9,7 +9,7 @@ class DRV260X(DRV260X_Base):
     }
 
     _sample_time_values = [
-        150, 200, 250, 300
+        0.00015, 0.0002, 0.00025, 0.0003
     ]
 
     _fb_brake_factor_values = [1, 2, 3, 4, 6, 8, 16, 0]

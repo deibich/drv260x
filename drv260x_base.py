@@ -40,11 +40,11 @@ class DRV260X_Base:
 
     @property
     def standby(self):
-        return self.read_register_value(Register._DRV260X_REG_MODE, Mask._MODE_READ, 6)
+        return self.read_register_value(Register._DRV260X_REG_MODE, Mask._STANDBY_READ, 6)
     
     @standby.setter
     def standby(self, value):
-        self.write_register_value(Register._DRV260X_REG_MODE, 1, Mask._STANDBY_WRITE, 6)
+        self.write_register_value(Register._DRV260X_REG_MODE, value, Mask._STANDBY_WRITE, 6)
 
     @property
     def mode(self):
@@ -331,7 +331,7 @@ class DRV260X_Base:
         self.write_register_value(Register._DRV260X_REG_AUTOCAL_BACK_EMF_RESULT, value, Mask._A_CAL_BEMF_WRITE)
         
     @property
-    def n_erm_lra(self, value):
+    def n_erm_lra(self):
         return self.read_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, Mask._N_ERM_LRA_READ, 7)
         
     @n_erm_lra.setter
@@ -533,6 +533,7 @@ class DRV260X_Base:
         self.write_register_value(Register._DRV260X_REG_WAVESEQ0 + sequencer, value, Mask._WAV_FRM_SEQ_WRITE)
     
     def write_register_value(self, register, value, write_mask, shift = 0):
+        print("Write " + str(value) + " to register " + str(register) + " with mask " + str(write_mask) + " and shift " + str(shift))
         reg_val = self.read_byte(register)
         self.write_byte(register, (reg_val & write_mask) | (value << shift))    
 
