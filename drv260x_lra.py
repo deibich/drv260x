@@ -19,7 +19,10 @@ class DRV260X_LRA(DRV260X):
         else:
             raise ValueError("closed_open_loop must be LOOP_MODE_CLOSED or LOOP_MODE_OPEN")
     
-    def calibrate(self, voltage_volt, closed_open_loop, resonant_frequency, fb_brake_factor, loop_gain, auto_cal_time, drive_time, idiss_time, blanking_time, sample_time):
+    def calibrate(self, voltage_volt, closed_open_loop, resonant_frequency, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time = Values.SAMPLE_TIME_300, blanking_time = 2, idiss_time = 1):
         self.set_base_calibration_values(Values.N_ERM_LRA_LRA, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time, blanking_time, idiss_time)
         self.rated_voltage = self.calc_rated_voltage(voltage_volt, sample_time, resonant_frequency)
         self.od_clamp = self.calc_od_clamp(voltage_volt, closed_open_loop, drive_time, idiss_time, blanking_time)
+
+    def simple_calibrate(self, voltage_volt, closed_open_loop, resonant_frequency):
+        self.calibrate(Values.N_ERM_LRA_LRA, closed_open_loop, resonant_frequency, Values.FB_BRAKE_FACTOR_3, Values.LOOP_GAIN_HIGH, Values.AUTO_CAL_TIME_1000_1200, 0x13)
