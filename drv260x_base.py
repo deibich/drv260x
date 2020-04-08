@@ -426,7 +426,7 @@ class DRV260X_Base:
     
     @idiss_time.setter
     def idiss_time(self, value):
-        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._IDISS_TIME_READ)
+        self.write_register_value(Register._DRV260X_REG_CONTROL2, value, Mask._IDISS_TIME_WRITE)
     
     @property
     def ng_tresh(self):
