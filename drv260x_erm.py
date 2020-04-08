@@ -22,3 +22,6 @@ class DRV260X_ERM(DRV260X):
         self.set_base_calibration_values(Values.N_ERM_LRA_ERM, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time, blanking_time, idiss_time)
         self.rated_voltage = self.calc_rated_voltage(voltage_volt)
         self.od_clamp = self.calc_od_clamp(voltage_volt, closed_open_loop, drive_time, idiss_time, blanking_time)
+
+    def calibrate_default():
+        pass
