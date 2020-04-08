@@ -8,6 +8,10 @@ class DRV260X(DRV260X_Base):
         Values.N_ERM_LRA_LRA: [5.0, 10.0, 20.0, 30.0]
     }
 
+    _sample_time_values = [
+        150, 200, 250, 300
+    ]
+
     _fb_brake_factor_values = [1, 2, 3, 4, 6, 8, 16, 0]
 
     def __init__(self, i2c):

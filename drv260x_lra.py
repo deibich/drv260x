@@ -9,7 +9,7 @@ class DRV260X_LRA(DRV260X):
         self.n_erm_lra = Values.N_ERM_LRA_LRA
     
     def calc_rated_voltage(self, voltage_volt, sample_time, resonant_frequency):
-        return voltage_volt / (0.02071 * math.sqrt(1 - (4 * sample_time + 0.0003) * resonant_frequency))
+        return voltage_volt / (0.02071 * math.sqrt(1 - (4 * self._sample_time_values[sample_time] + 0.0003) * resonant_frequency))
     
     def calc_od_clamp(self, voltage_volt, closed_open_loop, resonant_frequency = 200):
         if closed_open_loop == Values.LOOP_MODE_CLOSED:
