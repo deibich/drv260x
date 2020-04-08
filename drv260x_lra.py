@@ -26,3 +26,4 @@ class DRV260X_LRA(DRV260X):
 
     def simple_calibrate(self, voltage_volt, closed_open_loop, resonant_frequency):
         self.calibrate(Values.N_ERM_LRA_LRA, closed_open_loop, resonant_frequency, Values.FB_BRAKE_FACTOR_3, Values.LOOP_GAIN_HIGH, Values.AUTO_CAL_TIME_1000_1200, 0x13)
+        

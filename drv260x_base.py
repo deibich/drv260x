@@ -335,7 +335,7 @@ class DRV260X_Base:
         return self.read_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, Mask._N_ERM_LRA_READ, 7)
         
     @n_erm_lra.setter
-    def n_erm_lra(self):
+    def n_erm_lra(self, value):
         if not Values.N_ERM_LRA_ERM <= value <= Values.N_ERM_LRA_LRA:
             raise ValueError("Actuator value must be " + str(Values.N_ERM_LRA_ERM) + " or " + str(Values.N_ERM_LRA_LRA))
         self.write_register_value(Register._DRV260X_REG_FEEDBACK_CONTROL, value, Mask._N_ERM_LRA_WRITE, 7)
