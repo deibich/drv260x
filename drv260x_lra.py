@@ -23,6 +23,7 @@ class DRV260X_LRA(DRV260X):
         self.set_base_calibration_values(Values.N_ERM_LRA_LRA, closed_open_loop, fb_brake_factor, loop_gain, auto_cal_time, drive_time, sample_time, blanking_time, idiss_time)
         self.rated_voltage = round(self.calc_rated_voltage(voltage_volt, sample_time, resonant_frequency))
         self.od_clamp = round(self.calc_od_clamp(voltage_volt, closed_open_loop, resonant_frequency))
+        self.go = 1
 
     def calibrate_default(self, voltage_volt, closed_open_loop, resonant_frequency):
         self.calibrate(Values.N_ERM_LRA_LRA, closed_open_loop, resonant_frequency, Values.FB_BRAKE_FACTOR_3, Values.LOOP_GAIN_HIGH, Values.AUTO_CAL_TIME_1000_1200, 0x13)
